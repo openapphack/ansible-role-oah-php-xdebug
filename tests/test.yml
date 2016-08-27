@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  remote_user: root
+
+  roles:
+    - oah.php
+    - ansible-role-oah-php-xdebug
