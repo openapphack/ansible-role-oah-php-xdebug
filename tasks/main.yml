@@ -1,40 +1,17 @@
 ---
-- name: Include OS-specific variables.
-  include_vars: "{{ ansible_os_family }}.yml"
+- include: tasks/oah-install.yml
+  when: oah_command == "install"
 
-- name: Download Xdebug.
-  get_url:
-    url: "http://xdebug.org/files/xdebug-{{ php_xdebug_version }}.tgz"
-    dest: "{{ workspace }}"
+- include: tasks/oah-update.yml
+  when: oah_command == "update"
 
-- name: Untar Xdebug.
-  command: >
-    tar -C {{ workspace }} -xvzf {{ workspace }}/xdebug-{{ php_xdebug_version }}.tgz
-    creates={{ workspace }}/xdebug-{{ php_xdebug_version }}/README
+- include: tasks/oah-remove.yml
+  when: oah_command == "remove"
 
-- name: Build Xdebug.
-  shell: >
-    {{ item }}
-    chdir={{ workspace }}/xdebug-{{ php_xdebug_version }}
-    creates={{ workspace }}/xdebug-{{ php_xdebug_version }}/modules/xdebug.so
-  with_items:
-    - phpize
-    - ./configure
-    - make
-  notify: restart webserver
+- include: tasks/oah-reset.yml
+  when: oah_command == "reset"
 
-- name: Ensure Xdebug module path exists.
-  file:
-    path: "{{ php_xdebug_module_path }}"
-    state: directory
-    owner: root
-    group: root
-    mode: 0755
+- include: tasks/oah-validate.yml
+  when: oah_command == "validate"
 
-- name: Move Xdebug module into place.
-  shell: >
-    cp {{ workspace }}/xdebug-{{ php_xdebug_version }}/modules/xdebug.so {{ php_xdebug_module_path }}/xdebug.so
-    creates={{ php_xdebug_module_path }}/xdebug.so
-  notify: restart webserver
-
-- include: configure.yml
+#- include: tasks/oah-{{ oah_command }}.yml

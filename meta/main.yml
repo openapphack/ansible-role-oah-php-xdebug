@@ -4,7 +4,7 @@ dependencies:
 
 galaxy_info:
   author: Vinod Panicker
-  description: PHP XDebug for OpenAppHack
+  description: PHP XDebug for OAH
   company: ""
   license: "license (BSD, MIT)"
   min_ansible_version: 2.0
